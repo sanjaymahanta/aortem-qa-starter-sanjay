@@ -1,0 +1,13 @@
+name: aortem_qa_backend
+description: Minimal Dart Shelf API for Aortem QA assignment
+publish_to: "none"
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0

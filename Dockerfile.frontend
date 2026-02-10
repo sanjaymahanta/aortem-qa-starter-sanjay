@@ -1,0 +1,24 @@
+# Stage 1: Build
+FROM dart:stable AS build
+
+WORKDIR /app
+
+# Poora frontend folder copy karo
+COPY frontend/ .
+
+# SMART CLEANUP: Flutter ki lines ko pubspec se delete karo taaki dart pub get pass ho jaye
+RUN sed -i '/flutter/d' pubspec.yaml && \
+    sed -i '/uses-material-design/d' pubspec.yaml && \
+    dart pub get
+
+# Server compile karo
+RUN dart compile exe bin/server.dart -o bin/server
+
+# Stage 2: Runtime
+FROM debian:bookworm-slim
+WORKDIR /app
+COPY --from=build /app/bin/server /app/server
+COPY --from=build /app/public /app/public 
+
+EXPOSE 8080
+CMD ["/app/server"]

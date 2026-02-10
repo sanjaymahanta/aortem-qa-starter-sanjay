@@ -1,0 +1,28 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Backend deps & tests
+        working-directory: backend
+        run: |
+          dart pub get
+          dart test
+
+      # Frontend note: swap to flutter-action if using Flutter proper
+      - name: Lint workspace
+        run: |
+          echo "Add flutter analyze here if you convert to real Flutter project"
+
+      - name: Build Docker images
+        run: |
+          docker build --no-cache -t aortem-qa-frontend -f Dockerfile.frontend .
+          docker build --no-cache -t aortem-qa-backend -f Dockerfile.backend .
