@@ -1,13 +1,23 @@
 # Stage 1: build
 FROM dart:3.5 AS build
+
 WORKDIR /app
+
+# Step A: Pehle dependencies install karo
 COPY backend/pubspec.yaml ./
 RUN dart pub get
+
+# Step B: Phir sara code copy karo
 COPY backend .
+
+# Step C: Sabse important - verify dependencies after copy
+RUN dart pub get --offline
+
+# Step D: Compile
 RUN dart compile exe bin/server.dart -o /app/bin/server
 
 # Stage 2: runtime
-FROM dart:3.5
+FROM debian:bookworm-slim
 WORKDIR /app
 COPY --from=build /app/bin/server /app/server
 EXPOSE 8081
